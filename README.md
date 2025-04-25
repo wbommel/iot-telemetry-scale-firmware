@@ -51,40 +51,21 @@ This project is part of the [IoT Telemetry Scale Project](https://github.com/wbo
   * HX711
   * ESP8266WiFi or WiFi (depending on board) (PlatformIO detects the board type by compiler conditions)
 
-4. Create private_config.ini in the root folder (file is ignored via gitignore) (template file provided)
+4. Create private_config.ini in the root folder (file is ignored via gitignore) (commented template file provided)
 
 5. Flash the firmware to your microcontroller.
+
+### ⚖️ Calibrating the scale
 
 ### 📡 MQTT Topics
 
 Topic | Example Payload | Description
 |--|--|--|
-iot-scale/weight | 23.5 | Published every second
-iot-scale/heartbeat | online | Sent every 30 seconds
-iot-scale/command | tare | Remote commands (tare, calibrate)
-iot-scale/debug | JSON object | Optional verbose system info
-
-### 💬 Remote Commands
-Publish to the iot-scale/command topic to control the scale:
-
-tare – Resets the current weight to zero
-
-calibrate:<value> – Applies a calibration factor (e.g. calibrate:437)
-
-Example:
-
-```bash
-  mosquitto_pub -h 192.168.1.100 -t "iot-scale/command" -m "tare"
-```
-
-### 📁 Project Structure
-
-```bash
-📁 src/
-├── main.cpp            # Firmware main logic
-├── config.h            # User-specific WiFi & MQTT settings
-├── scale_logic.h       # HX711 handling and utilities
-```
+<configured client id>/weight | 23.5 | calculated weight (raw_reading/Calibration Value)
+<configured client id>/raw_reading | 250873 | raw output of the hx711 to be able to manually calculate a calibration value
+<configured client id>/heartbeat | online | Sent every 30 seconds
+<configured client id>/tare | . | tare command (payload irrelevant)
+<configured client id>/calibrate | . | calibrate command (payload irrelevant)
 
 ### 🧩 Related Repositories
 
