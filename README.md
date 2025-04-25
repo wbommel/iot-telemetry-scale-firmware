@@ -5,6 +5,16 @@ This project is part of the [IoT Telemetry Scale Project](https://github.com/wbo
 
 ---
 
+> ⚠️ **Disclaimer**
+> 
+> This project is the result of personal experimentation and learning. I am a hobbyist and not a certified electronics engineer, nor an expert in load cell calibration or metrology.
+> 
+> While the system works well in my own setup (and with budgies 🐦!), it may require adaptation, validation, and care before use in other environments—especially in critical or commercial applications.
+> 
+> Please review all schematics, firmware, and configuration settings carefully before use. I welcome contributions, feedback, and improvements from the community!
+
+---
+
 ## ✨ Features
 
 - 📦 Supports HX711 load cells
