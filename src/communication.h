@@ -34,6 +34,7 @@ Timeout heartbeatTimeout(1000);
 String client_id;
 String topic_heartbeat;
 String topic_weight;
+String topic_raw_reading;
 String topic_tare;
 String topic_calibrate;
 
@@ -114,4 +115,13 @@ bool publishWeight(float value) {
 
   return _mqttClass->Instance()->publish(topic_weight.c_str(),
                                          String(value, 2).c_str());
+}
+
+bool publishRawReading(long value) {
+  if (!_mqttClass->Instance()->connected()) {
+    return false;
+  }
+
+  return _mqttClass->Instance()->publish(topic_raw_reading.c_str(),
+                                         String(value).c_str());
 }

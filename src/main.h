@@ -46,6 +46,7 @@ void TareScale();
 void CalibrateScale();
 
 void PublishWeight(float weight);
+void PublishRawReading(long reading);
 
 /******************************************************************************
 ** instance definitions
@@ -73,9 +74,22 @@ void setupConfig(DebugOutput *debugOut) {
   debugOut->ToDebug("CLIENT_ID: " + String(CLIENT_ID), prefix_main_h);
   client_id = CLIENT_ID;
 #endif
+#ifdef CALIBRATION_WEIGHT
+  debugOut->ToDebug("CALIBRATION_WEIGHT: " + String(CALIBRATION_WEIGHT),
+                    prefix_main_h);
+  floatCalibrationWeight = strtof(String(CALIBRATION_WEIGHT).c_str(), NULL);
+#endif
+#ifdef INITIAL_CALIBRATION_VALUE
+  debugOut->ToDebug("INITIAL_CALIBRATION_VALUE: " +
+                        String(INITIAL_CALIBRATION_VALUE),
+                    prefix_main_h);
+  floatCalibrationValue =
+      strtof(String(INITIAL_CALIBRATION_VALUE).c_str(), NULL);
+#endif
 
   topic_heartbeat = client_id + "/heartbeat";
   topic_weight = client_id + "/weight";
+  topic_raw_reading = client_id + "/raw_reading";
   topic_tare = client_id + "/tare";
   topic_calibrate = client_id + "/calibrate";
 }

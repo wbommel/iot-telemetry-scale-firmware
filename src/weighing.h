@@ -14,6 +14,7 @@ void tareScale();
 void calibrateScale();
 
 void (*doPublishWeight)(float weight);
+void (*doPublishRawReading)(long reading);
 
 /******************************************************************************
  * HX711 setup
@@ -36,17 +37,18 @@ InputButton btnTare(TARE_BTN, tareScale, nullptr);
 Timeout tareTimeout(2000);
 
 // calibrate mode switch
-//    calibration is yet hardcoded to use a 200g calibration weight
 bool fCalibrateModeActive = false;
 
 // Initial calibration value (200g calibration weight on load cell from DIPSE)
-float floatCalibrationValue = 2590 * 3;
+float floatCalibrationWeight;
+float floatCalibrationValue;
 
 /******************************************************************************
  * Main setup routine
  *****************************************************************************/
 void WeighingSetup() {
-  Serial.println("\n\nHX711 Demo");
+  Serial.println("WeighingSetup() - enter");
+  // Serial.println("\n\nHX711 Demo");
 
   Serial.println("Initializing the scale");
 
@@ -102,7 +104,8 @@ void WeighingSetup() {
       1); // print the average of 5 readings from the ADC minus tare weight,
           // divided by the SCALE parameter set with set_scale
 
-  Serial.println();
+  // Serial.println();
+  Serial.println("WeighingSetup() - leave");
 }
 
 /******************************************************************************
@@ -111,23 +114,27 @@ void WeighingSetup() {
 void WeighingLoop() {
   long reading = 0;
   float weight = 0;
-  char strMode[10];
-  char strWeight[10];
+  char strMode[12];
+  char strWeight[12];
 
   if (scale.is_ready()) {
     reading = scale.read();
 
-    if (fCalibrateModeActive) {
-      String("Calibrate:").toCharArray(strMode, 10);
-      weight = scale.get_units(5);
-    } else {
-      String("Weight:").toCharArray(strMode, 10);
-      weight = scale.get_units(10);
-      floatCalibrationValue = weight / 100.f;
+    if (doPublishRawReading) {
+      doPublishRawReading(reading);
     }
 
-    String("           ").toCharArray(strWeight, 10);
-    String(weight, 0).toCharArray(strWeight, 5);
+    if (fCalibrateModeActive) {
+      String("Calibrating ").toCharArray(strMode, 12);
+      weight = scale.get_units(5);
+
+    } else {
+      String("Weighing    ").toCharArray(strMode, 12);
+      weight = scale.get_units(10);
+    }
+
+    String("             ").toCharArray(strWeight, 12);
+    String(weight, 2).toCharArray(strWeight, 5);
 
     if (doPublishWeight) {
       doPublishWeight(weight);
@@ -135,15 +142,17 @@ void WeighingLoop() {
 
     Serial.print("HX711 reading: ");
     Serial.print(reading);
-    Serial.print("\t Weight: ");
+    Serial.print("\t");
+    Serial.print("Weight: ");
     Serial.print(weight);
     Serial.print("\t");
     Serial.print(strMode);
-    Serial.print("\tCalibration Value: ");
+    Serial.print("\t");
+    Serial.print("Calibration Value: ");
     Serial.println(floatCalibrationValue);
   }
 
-  delay(1000);
+  // delay(1000);
   btnCalibrate.CheckButtonState(nullptr, nullptr);
   btnTare.CheckButtonState(nullptr, nullptr);
 }
@@ -160,7 +169,7 @@ void tareScale() {
 
 void calibrateScale() {
   if (fCalibrateModeActive) {
-    floatCalibrationValue = scale.get_units(20) / 100.0f;
+    floatCalibrationValue = scale.get_units(10) / floatCalibrationWeight;
     scale.set_scale(floatCalibrationValue);
     fCalibrateModeActive = false;
   } else {

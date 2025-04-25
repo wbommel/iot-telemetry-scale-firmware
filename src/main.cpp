@@ -17,6 +17,7 @@ void setup() {
   onTareScale = TareScale;
   onCalibrateScale = CalibrateScale;
   doPublishWeight = PublishWeight;
+  doPublishRawReading = PublishRawReading;
 
   debugOut->ToDebug("setup() - leave", prefix_main_cpp);
 }
@@ -31,3 +32,5 @@ void TareScale() { tareScale(); }
 void CalibrateScale() { calibrateScale(); }
 
 void PublishWeight(float weight) { publishWeight(weight); }
+
+void PublishRawReading(long reading) { publishRawReading(reading); }

@@ -19,3 +19,11 @@
 #ifndef CLIENT_ID
 #error Need to pass Client ID
 #endif
+
+#ifndef CALIBRATION_WEIGHT
+#error Need to pass Calibration Weight
+#endif
+
+#ifndef INITIAL_CALIBRATION_VALUE
+#error Need to pass Calibration Weight
+#endif
